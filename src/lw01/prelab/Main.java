@@ -2,20 +2,30 @@ package lw01.prelab;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
 public class Main {
     public static void main(String[] args) {
-        File file = new File("src/lw01/prelab/jobs.txt");
-        if (!file.exists()) {
-            file = new File("jobs.txt");
-        }
+        File file = findJobsFile();
+        Scanner scanner = null;
 
-        List<PrintJob> jobs = new ArrayList<>();
+        try {
+            if (file != null && file.exists()) {
+                scanner = new Scanner(file);
+            } else {
+                InputStream is = Main.class.getResourceAsStream("jobs.txt");
+                if (is != null) {
+                    scanner = new Scanner(is);
+                } else {
+                    scanner = new Scanner(new File("jobs.txt"));
+                }
+            }
 
-        try (Scanner scanner = new Scanner(file)) {
+            List<PrintJob> jobs = new ArrayList<>();
+
             while (scanner.hasNext()) {
                 String type = scanner.next();
                 String id = scanner.next();
@@ -27,13 +37,34 @@ public class Main {
                     jobs.add(new ColourPrint(id, pages));
                 }
             }
+
+            for (PrintJob job : jobs) {
+                System.out.println(job.summary());
+            }
         } catch (FileNotFoundException e) {
             System.err.println("File jobs.txt tidak ditemukan: " + e.getMessage());
-            return;
+        } finally {
+            if (scanner != null) {
+                scanner.close();
+            }
         }
+    }
 
-        for (PrintJob job : jobs) {
-            System.out.println(job.summary());
+    private static File findJobsFile() {
+        String[] candidatePaths = {
+            "jobs.txt",
+            "src/lw01/prelab/jobs.txt",
+            "lw01/prelab/jobs.txt",
+            "dsa-5026251159/src/lw01/prelab/jobs.txt",
+            "C:/A. User Files/A. Kuliah/Semester 3/ASD/Prelab 1/dsa-5026251159/src/lw01/prelab/jobs.txt"
+        };
+
+        for (String path : candidatePaths) {
+            File f = new File(path);
+            if (f.exists()) {
+                return f;
+            }
         }
+        return null;
     }
 }
