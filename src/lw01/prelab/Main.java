@@ -12,8 +12,6 @@ public class Main {
     public static void main(String[] args) {
         File file = findJobsFile();
         Scanner scanner = null;
-
-        System.out.println("test");
         try {
             if (file != null && file.exists()) {
                 scanner = new Scanner(file);
