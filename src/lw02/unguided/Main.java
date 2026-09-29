@@ -80,7 +80,6 @@ public class Main {
             }
 
             if (foodAvailable && drinkAvailable) {
-                // kurangi stok makanan
                 if (targetFood != null) {
                     int currentFoodStock = Integer.parseInt(targetFood[1]);
                     targetFood[1] = String.valueOf(currentFoodStock - 1);
@@ -93,7 +92,6 @@ public class Main {
 
                 successfulOrders.add(order);
             } else {
-                // masukkan pesanan gagal ke stack
                 failedOrders.push(order);
             }
         }
